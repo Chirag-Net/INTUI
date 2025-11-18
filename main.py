@@ -16,10 +16,8 @@ async def save_payload(request: Request):
     Accept ANY payload (JSON, text, form) and save it.
     """
     try:
-        # Try JSON payload
         data = await request.json()
     except:
-        # Fallback: raw text
         raw = await request.body()
         data = raw.decode("utf-8")
 
@@ -31,10 +29,15 @@ async def save_payload(request: Request):
 
     # Save to file
     with open(LOG_FILE, "a", encoding="utf-8") as f:
-        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        f.write(json.dumps(entry) + "\n")
 
-    # Return clean JSON response
-    return {
+    # Create API response
+    response_json = {
         "message": "Payload saved successfully",
         "logged": entry
     }
+
+    # ⭐ Print response JSON so it appears in Render Logs
+    print(json.dumps(response_json, indent=2))
+
+    return response_json
